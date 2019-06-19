@@ -3,6 +3,128 @@ title: "iqrh"
 author: "Matte"
 date: '2019-06-19'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
+Loading tidyverse
+```{r}
+library(tidyverse)
+```
+
+load data
+```{r}
+#loading gapminder dataset from github
+gapminder <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+
+
+```
+
+
+```{r}
+head(gapminder)
+tail(gapminder)
+
+#str() stands for structure
+str(gapminder)
+
+#column names of gapminder
+names(gapminder)
+ncol(gapminder)
+```
+
+
+Look at individual dataframe variables
+```{r}
+
+#Show me lifeexp column
+gapminder$lifeExp
+
+```
+
+Filter the dataset
+```{r}
+filter(gapminder, lifeExp<29)
+
+```
+
+#just look at Mexico
+```{r}
+filter(gapminder, country == "Mexico", year == 2002)
+x<-filter(gapminder, country == "Brazil", year > 1986)
+mean(x$lifeExp)
+x
+
+```
+
+
+Learning the Select() function
+```{r}
+#These 2 lines accomplish the same thing
+select(gapminder,year,country,lifeExp)
+select(gapminder,-continent,-gdpPercap, -pop)
+```
+
+Using Filter() and Select() together
+```{r}
+gap.cambodia<-filter(gapminder,country == "Cambodia")
+gap_cambodia2<-select(gap.cambodia,-continent, -lifeExp)
+View(gap_cambodia2)
+
+```
+
+The pipe operator %>%
+ctrl+shift+m
+```{r}
+## instead of this...
+gap_cambodia  <- filter(gapminder, country == "Cambodia")
+gap_cambodia2 <- select(gap_cambodia, -continent, -lifeExp) 
+
+## ...we can do this
+gap_cambodia  <- gapminder %>% filter(country == "Cambodia")
+gap_cambodia2 <- gap_cambodia %>% select(-continent, -lifeExp)
+
+```
+
+Learn mutate() which adds a new column
+```{r}
+
+gapminder %>% 
+  filter(continent=="Asia",year==2007) %>% 
+  mutate(pop_thousands = pop/1000) %>% 
+  select(country, year, pop_thousands)
+
+```
+
+Learning the group_by() function
+```{r}
+gapminder %>% 
+  filter(year==2002) %>% 
+  group_by(continent) %>% 
+  mutate(cont_pop=sum(pop))
+```
+
+Add in summarize()
+```{r}
+gapminder %>% 
+  filter(year==2002) %>% 
+  group_by(continent) %>% 
+  summarise(cont_pop=sum(pop))
+```
+
+```{r}
+gapminder %>% 
+  group_by(continent,year) %>% 
+  summarise(cont_pop=sum(pop)) %>% 
+  ungroup()
+# After you use group_by(), always ungroup() after
+```
+
+```{r}
+gapminder %>%
+  mutate(gdp = pop * gdpPercap) %>%
+  group_by(continent) %>%
+  mutate(max_gdp = max(gdp)) %>%
+  filter(gdp == max_gdp)
+```
 
