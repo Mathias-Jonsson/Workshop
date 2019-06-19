@@ -1,0 +1,84 @@
+---
+title: "ggplot"
+author: "Matte"
+date: '2019-06-19'
+output: html_document
+---
+
+```{r, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data}
+
+library(tidyverse)
+ohi.data<-read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/OHI_global_data.csv")
+#View(ohi.data)
+
+summary(ohi.data)
+ggplot(data = ohi.data, aes(x=georegion_one, y=OHI_score))
+ggplot(data = ohi.data, aes(x=georegion_one, y=OHI_score)) + geom_point()
+ggplot(data = ohi.data, aes(x=georegion_one, y=OHI_score)) + geom_jitter()
+ggplot(data=ohi.data, aes(x=georegion_one)) + geom_bar()
+ggplot(data=ohi.data, aes(x=HDI)) + geom_histogram()
+
+## Multiple geomes
+ohi_summary <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/OHI_scores_georegion_summary.csv")
+ohi_summary
+#ggplot(data=ohi_summary, aes(x=georegions, y =OHI_score_average)) + geom_bar()
+ggplot(data=ohi_summary, aes(x=georegions, y =OHI_score_average)) + geom_bar(stat="identity")
+ggplot(data=ohi_summary, aes(x=georegions, y =OHI_score_average)) + geom_bar(stat = "identity") + geom_jitter(data = ohi.data, aes(x = georegion_one, y = OHI_score))
+ggplot(data = ohi.data, aes(y=OHI_score, x = HDI, color=georegion_one)) +
+  geom_point()
+ggplot(data = ohi.data) +
+  geom_point(aes(y = OHI_score, x = HDI, color=georegion_one)) 
+
+## Adding a third variable with aes
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, size = coastal_pop)) + geom_point()
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, color = coastal_pop)) + geom_point()
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, color = georegion_one)) + geom_point()
+
+## Making prettier plots
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI)) + geom_point() + theme_bw()
+source('https://raw.githubusercontent.com/OHI-Science/ohiprep/master/src/R/scatterTheme.txt')
+source('https://raw.githubusercontent.com/OHI-Science/ohiprep/master/src/R/scatterTheme.txt')       
+
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI)) + 
+  geom_point() + 
+  scatterTheme
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, color = georegion_one)) + geom_point()
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, color = georegion_one)) + geom_point()+ labs(y = "OHI score 2017", x = "Human Development Index", title = "HDI is swell", color = "Georegions")
+
+## Color
+
+library(RColorBrewer) #install.packages("RColorBrewer")
+display.brewer.all()
+my_palette <- brewer.pal(n=9, "YlOrRd")
+my_palette
+#ggplot(data = ohi.data, aes(x = OHI_score, y = OHI_trend, color = HDI)) + geom_point(size=3)+ scale_color_gradient(colors=c("blue", "red"))
+ggplot(data = ohi.data, aes(x = OHI_score, y = HDI, color = georegion_one)) + 
+  geom_point(size = 3) +
+  scale_color_manual(values = my_palette)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
